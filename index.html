@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Kestrel C-44: Cockpit Flight Simulator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="cockpit-shell">
+    <!-- Windshield View -->
+    <div class="viewport-wrap" id="viewportWrap">
+      <canvas id="skyCanvas" aria-label="2D windshield view from Kala Valley Field via Redrock Fuel Depot to Solis Coastal International"></canvas>
+
+      <header class="top-bar">
+        <div class="flight-id">
+          <span class="plane-tag">C-44 KESTREL</span>
+          <span class="leg-readout" id="legReadout">LEG 1: KALA TO MESA-4 FUEL DEPOT</span>
+        </div>
+        <div class="toolbar-actions">
+          <button type="button" class="inst-btn" id="soundBtn" aria-pressed="false" title="Toggle cockpit and turbine audio (M)">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 9v6h4l5 4V5L8 9H4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+              <path id="soundWaves" d="M16.5 8.5a5 5 0 0 1 0 7M19.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:none"/>
+              <path id="soundMuteX" d="M16 9l5 6m0-6l-5 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+            <span id="soundLabel">Audio Off</span>
+          </button>
+          <button type="button" class="inst-btn" id="helpBtn" aria-expanded="false" aria-controls="helpModal" title="Pause and read cockpit guide (P or Esc)">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="6" y="5" width="4" height="14" rx="1" fill="none" stroke="currentColor" stroke-width="1.8"/>
+              <rect x="14" y="5" width="4" height="14" rx="1" fill="none" stroke="currentColor" stroke-width="1.8"/>
+            </svg>
+            <span>Manual</span>
+          </button>
+          <button type="button" class="inst-btn" id="restartTopBtn" title="Reset aircraft at Kala Field (R)">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 12a8 8 0 1 0 2.3-5.6L4 8.8V4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Reset</span>
+          </button>
+        </div>
+      </header>
+
+      <div class="live-banner" id="liveBanner" hidden aria-live="polite"></div>
+
+      <!-- Pause / Flight Manual Dialog -->
+      <section class="overlay-card" id="helpModal" role="dialog" aria-modal="true" aria-labelledby="helpHeading" hidden>
+        <h2 id="helpHeading">C-44 Kestrel Cockpit Guide</h2>
+        <div class="manual-cols">
+          <div>
+            <h3>Panel Operation (Mouse)</h3>
+            <ul class="manual-list">
+              <li><strong>ENG Master:</strong> Flip ON to start turbine idle before pushing throttle.</li>
+              <li><strong>Throttle &amp; Spoiler Levers:</strong> Click or drag levers up/down (or scroll wheel while hovering). Above <code>80%</code> lights afterburner boost.</li>
+              <li><strong>Pitch Lever &amp; ALT HOLD:</strong> Drag <strong>PITCH</strong> to set climb/descent angle. Click <strong>0° LVL</strong> to center or <strong>ALT HOLD</strong> to cruise level hands-free.</li>
+              <li><strong>Flaps, Gear &amp; Brakes:</strong> Use <code>T/O</code> flaps for takeoff, retract <code>GEAR</code> and <code>FLAPS</code> in cruise to save fuel, and pre-arm <code>BRAKES</code> + <code>LAND</code> flaps + <code>GEAR DN</code> before landing.</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Route &amp; Refuel Procedure</h3>
+            <ul class="manual-list">
+              <li><strong>Takeoff:</strong> Rotate pitch to <code>+10°..+15°</code> once airspeed passes <code>25 m/s</code>.</li>
+              <li><strong>Midway Stop (MESA-4):</strong> Touch down under <code>7.6 m/s</code> sink rate on the elevated mesa strip, come to a stop, and click <strong>REFUEL PUMP</strong>.</li>
+              <li><strong>Final Leg (SOLIS):</strong> Climb over Cloudspine Ridge (<code>332 m</code>), descend along the green coastal glide slope, and stop on the runway.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="overlay-actions">
+          <button type="button" class="primary-btn" id="resumeBtn">Resume Cockpit</button>
+        </div>
+      </section>
+
+      <!-- Arrival / Crash Flight Log Dialog -->
+      <section class="overlay-card" id="outcomeModal" role="dialog" aria-modal="true" aria-labelledby="outcomeHeading" hidden>
+        <h2 id="outcomeHeading">Arrival Confirmed</h2>
+        <p class="outcome-desc" id="outcomeDesc"></p>
+        <dl class="log-stats" id="outcomeStats">
+          <div><dt>Flight Time</dt><dd id="statTime">0:00</dd></div>
+          <div><dt>Fuel Remaining</dt><dd id="statFuel">0%</dd></div>
+          <div><dt>Total Burned</dt><dd id="statBurned">0 u</dd></div>
+          <div><dt>Airframe</dt><dd id="statHull">100%</dd></div>
+        </dl>
+        <div class="overlay-actions">
+          <button type="button" class="primary-btn" id="checkpointBtn" hidden>Retry from Redrock Depot</button>
+          <button type="button" class="secondary-btn" id="restartModalBtn">Fly Full Route (Kala Field)</button>
+        </div>
+      </section>
+    </div>
+
+    <!-- Glareshield Co-Pilot Checklist & Master Warning Bar -->
+    <div class="glareshield-bar">
+      <div class="checklist-strip" id="checklistStrip" aria-live="polite"></div>
+      <div class="warning-strip" aria-label="Master caution annunciators">
+        <span class="warn-lamp" id="warnStall">STALL</span>
+        <span class="warn-lamp" id="warnSink">SINK RATE</span>
+        <span class="warn-lamp" id="warnGear">TOO LOW GEAR</span>
+        <span class="warn-lamp" id="warnFlap">FLAP OVERSPEED</span>
+        <span class="warn-lamp" id="warnFuel">LOW FUEL</span>
+      </div>
+    </div>
+
+    <!-- Interactive Physical Cockpit Console -->
+    <section class="cockpit-console" aria-label="Aircraft flight control panel">
+      <!-- BAY 1: Engine & Fuel -->
+      <div class="console-bay bay-engine">
+        <div class="bay-title">ENGINE &amp; FUEL</div>
+        <div class="engine-row">
+          <button type="button" class="toggle-switch is-cue" id="engSwitch" aria-pressed="false">
+            <span class="sw-cap">
+              <span class="sw-led"></span>
+              <span class="sw-bat"></span>
+            </span>
+            <span class="sw-text">
+              <span class="sw-name">ENG MASTER</span>
+              <span class="sw-state" id="engStateText">OFF</span>
+            </span>
+          </button>
+
+          <div class="mini-readout">
+            <span class="ro-label">TURBINE N1</span>
+            <span class="ro-val" id="rpmReadout">0%</span>
+          </div>
+        </div>
+
+        <div class="fuel-box">
+          <div class="gauge-head">
+            <span class="ro-label">FUEL TANK</span>
+            <span class="ro-val" id="fuelReadout">100% <small id="flowReadout">0.0 u/s</small></span>
+          </div>
+          <div class="bar-track" aria-hidden="true">
+            <div class="bar-fill fuel-fill" id="fuelBar"></div>
+          </div>
+          <button type="button" class="pump-btn" id="refuelBtn" disabled>
+            <span class="pump-led" id="refuelLed"></span>
+            <span id="refuelBtnText">REFUEL LOCKED (IN TRANSIT)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- BAY 2: Throttle & Spoiler Levers -->
+      <div class="console-bay bay-quadrant">
+        <div class="bay-title">THROTTLE QUADRANT</div>
+        <div class="levers-wrap">
+          <!-- Throttle Lever -->
+          <div class="lever-col">
+            <div class="lever-head">
+              <span class="ro-label">THRUST</span>
+              <span class="ro-val" id="thrReadout">0%</span>
+            </div>
+            <div
+              class="lever-slot throttle-slot"
+              id="throttleSlot"
+              role="slider"
+              tabindex="0"
+              aria-label="Engine throttle lever"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              aria-valuenow="0"
+            >
+              <div class="slot-zone zone-wep" title="80-100% Overboost">WEP</div>
+              <div class="slot-zone zone-cruise" title="60-80% Cruise">CRZ</div>
+              <div class="slot-track-line"></div>
+              <div class="slot-fill thr-slot-fill" id="thrSlotFill"></div>
+              <div class="lever-handle thr-handle" id="thrHandle" style="bottom: 0%">
+                <span class="grip-knurl"></span>
+              </div>
+            </div>
+            <button type="button" class="detent-mini-btn" id="idleCutBtn">IDLE 0%</button>
+          </div>
+
+          <!-- Spoiler / Airbrake Lever -->
+          <div class="lever-col">
+            <div class="lever-head">
+              <span class="ro-label">SPOILER</span>
+              <span class="ro-val" id="spoilReadout">0%</span>
+            </div>
+            <div
+              class="lever-slot spoiler-slot"
+              id="spoilerSlot"
+              role="slider"
+              tabindex="0"
+              aria-label="Airbrake spoiler lever"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              aria-valuenow="0"
+            >
+              <div class="slot-zone zone-brk">EXT</div>
+              <div class="slot-track-line"></div>
+              <div class="slot-fill spoil-slot-fill" id="spoilSlotFill"></div>
+              <div class="lever-handle spoil-handle" id="spoilHandle" style="bottom: 0%">
+                <span class="grip-knurl"></span>
+              </div>
+            </div>
+            <button type="button" class="detent-mini-btn" id="spoilRetBtn">RET 0%</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- BAY 3: Attitude ADI & Pitch Control -->
+      <div class="console-bay bay-attitude">
+        <div class="bay-title">ATTITUDE &amp; ELEVATOR</div>
+        <div class="attitude-grid">
+          <div class="adi-col">
+            <canvas id="adiCanvas" width="124" height="124" aria-label="Artificial horizon pitch indicator"></canvas>
+            <div class="ap-btn-row">
+              <button type="button" class="detent-mini-btn" id="pitchZeroBtn" title="Center elevator pitch to 0 degrees">0° LVL</button>
+              <button type="button" class="ap-btn" id="altHoldBtn" aria-pressed="false" title="Hold level vertical speed in cruise">ALT HOLD</button>
+            </div>
+          </div>
+
+          <div class="lever-col pitch-col">
+            <div class="lever-head">
+              <span class="ro-label">PITCH</span>
+              <span class="ro-val" id="pitchReadout">0°</span>
+            </div>
+            <div
+              class="lever-slot pitch-slot"
+              id="pitchSlot"
+              role="slider"
+              tabindex="0"
+              aria-label="Elevator pitch command"
+              aria-valuemin="-30"
+              aria-valuemax="35"
+              aria-valuenow="0"
+            >
+              <span class="pitch-mark mark-up">+35° UP</span>
+              <span class="pitch-mark mark-zero">0°</span>
+              <span class="pitch-mark mark-dn">-30° DN</span>
+              <div class="slot-track-line"></div>
+              <div class="pitch-zero-line"></div>
+              <div class="lever-handle pitch-handle" id="pitchHandle" style="bottom: 46.15%">
+                <span class="grip-knurl"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BAY 4: Flaps, Gear, Wheel Brakes -->
+      <div class="console-bay bay-config">
+        <div class="bay-title">FLAPS · GEAR · BRAKES</div>
+        <div class="config-grid">
+          <!-- 3-Detent Flaps -->
+          <div class="flaps-box" role="group" aria-label="Wing flaps selector">
+            <span class="ro-label">FLAPS</span>
+            <button type="button" class="flap-detent is-active" data-flap="0" id="flapBtn0">UP <small>0°</small></button>
+            <button type="button" class="flap-detent" data-flap="1" id="flapBtn1">T/O <small>15°</small></button>
+            <button type="button" class="flap-detent" data-flap="2" id="flapBtn2">LAND <small>35°</small></button>
+          </div>
+
+          <div class="gear-brake-stack">
+            <!-- Landing Gear Lever + 3 Greens -->
+            <button type="button" class="gear-lever-btn" id="gearBtn" aria-pressed="true">
+              <div class="gear-lamps" aria-hidden="true">
+                <span class="g-wheel is-green" id="gearLampN">N</span>
+                <div class="g-mains">
+                  <span class="g-wheel is-green" id="gearLampL">L</span>
+                  <span class="g-wheel is-green" id="gearLampR">R</span>
+                </div>
+              </div>
+              <div class="sw-text">
+                <span class="sw-name">LANDING GEAR</span>
+                <span class="sw-state" id="gearStateText">DOWN &amp; LOCKED</span>
+              </div>
+            </button>
+
+            <!-- Wheel / Auto Brake Switch -->
+            <button type="button" class="toggle-switch is-on" id="brakeSwitch" aria-pressed="true">
+              <span class="sw-cap">
+                <span class="sw-led"></span>
+                <span class="sw-bat"></span>
+              </span>
+              <div class="sw-text">
+                <span class="sw-name">WHEEL BRAKES</span>
+                <span class="sw-state" id="brakeStateText">PARKED ON</span>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- BAY 5: Flight Data & Route Radar -->
+      <div class="console-bay bay-telemetry">
+        <div class="bay-title">FLIGHT DATA &amp; RADAR</div>
+        <div class="data-trio">
+          <div class="num-cell">
+            <span class="ro-label">IAS</span>
+            <span class="num-val" id="spdReadout">0 <small>m/s</small></span>
+          </div>
+          <div class="num-cell">
+            <span class="ro-label">ALT</span>
+            <span class="num-val" id="altReadout">44 <small>m</small></span>
+          </div>
+          <div class="num-cell">
+            <span class="ro-label">VSI</span>
+            <span class="num-val" id="vsiReadout">+0.0 <small>m/s</small></span>
+          </div>
+        </div>
+
+        <div class="radar-box">
+          <div class="radar-head">
+            <span>KALA · MESA-4 · SOLIS</span>
+            <span id="waypointDist">MESA-4: 3.8 km</span>
+          </div>
+          <canvas id="routeCanvas" width="320" height="58" aria-hidden="true"></canvas>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="physics.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
