@@ -10,6 +10,10 @@
   <code>1-Handed Mouse Operation</code> &bull; <code>Procedural Physics</code> &bull; <code>Web Audio Synthesizer</code> &bull; <code>Zero External Dependencies</code>
 </p>
 
+<p align="center">
+  <a href="https://thinkypadd.github.io/pilot-sim/"><strong>▶ Play Live in Browser on GitHub Pages</strong></a>
+</p>
+
 ---
 
 ## ✦ Flight Plan & Route Profile
