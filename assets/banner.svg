@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" width="100%" height="100%">
+  <defs>
+    <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#244d73"/>
+      <stop offset="65%" stop-color="#6e94a8"/>
+      <stop offset="100%" stop-color="#e8be96"/>
+    </linearGradient>
+    <linearGradient id="sunGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff9e6"/>
+      <stop offset="100%" stop-color="#f2b452"/>
+    </linearGradient>
+    <linearGradient id="ridgeFar" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#3d576e" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#2a3c4d" stop-opacity="0.95"/>
+    </linearGradient>
+    <linearGradient id="ridgeNear" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#804a33"/>
+      <stop offset="100%" stop-color="#2a1e19"/>
+    </linearGradient>
+    <linearGradient id="panelGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1b2025"/>
+      <stop offset="100%" stop-color="#0f1215"/>
+    </linearGradient>
+    <linearGradient id="amberGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#efa931"/>
+      <stop offset="100%" stop-color="#f57c00"/>
+    </linearGradient>
+    <filter id="hudShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <style>
+    .mono { font-family: 'SF Mono', 'Consolas', 'Liberation Mono', monospace; font-variant-numeric: tabular-nums; }
+    .sans { font-family: 'Bahnschrift', 'DIN Alternate', 'Franklin Gothic Medium', -apple-system, sans-serif; }
+    .title { font-weight: 800; letter-spacing: 0.12em; fill: #f4efe6; }
+    .sub { font-weight: 600; letter-spacing: 0.22em; fill: #efa931; font-size: 13px; }
+    .tag { font-size: 11px; fill: #c5beb2; letter-spacing: 0.08em; }
+    .val { font-weight: 700; fill: #f4efe6; }
+  </style>
+
+  <!-- Sky Background -->
+  <rect width="1200" height="340" fill="url(#skyGrad)"/>
+
+  <!-- Sun Disc -->
+  <circle cx="940" cy="90" r="54" fill="url(#sunGrad)" opacity="0.3"/>
+  <circle cx="940" cy="90" r="26" fill="url(#sunGrad)"/>
+
+  <!-- Distant Clouds -->
+  <path d="M 120 110 Q 150 90 190 100 Q 230 85 270 105 Q 300 115 310 130 L 100 130 Z" fill="#faf6ee" opacity="0.45"/>
+  <path d="M 680 75 Q 710 55 750 65 Q 790 50 830 70 Q 860 80 870 95 L 660 95 Z" fill="#faf6ee" opacity="0.5"/>
+
+  <!-- Distant Mountain Ridges -->
+  <path d="M 0 240 Q 180 140 380 200 T 780 150 T 1200 220 L 1200 340 L 0 340 Z" fill="url(#ridgeFar)"/>
+  
+  <!-- Foreground Mesa Terrain & Runway -->
+  <path d="M 0 290 Q 220 220 440 250 L 520 220 L 820 220 L 920 280 Q 1060 300 1200 270 L 1200 340 L 0 340 Z" fill="url(#ridgeNear)"/>
+
+  <!-- Paved Runway Slabs (MESA-4) -->
+  <rect x="520" y="218" width="300" height="8" fill="#2b3034"/>
+  <line x1="530" y1="222" x2="810" y2="222" stroke="#e8e2d5" stroke-width="2" stroke-dasharray="16 12"/>
+  <rect x="522" y="218" width="8" height="8" fill="#efa931"/>
+  <rect x="810" y="218" width="8" height="8" fill="#efa931"/>
+
+  <!-- Refuel Station Gantry -->
+  <path d="M 660 218 L 668 185 L 702 185 L 710 218" fill="none" stroke="#efa931" stroke-width="3"/>
+  <rect x="630" y="196" width="22" height="22" fill="#dfd8ca"/>
+  <rect x="630" y="204" width="22" height="5" fill="#e45c34"/>
+
+  <!-- C-44 Kestrel Airplane in Flight -->
+  <g transform="translate(390, 145) rotate(-6)">
+    <!-- Jet Flame -->
+    <path d="M -26 0 L -80 -4 L -95 0 L -80 4 Z" fill="#e45c34" opacity="0.85"/>
+    <path d="M -26 0 L -55 -2 L -65 0 L -55 2 Z" fill="#fff5d6"/>
+    <!-- Gear Up (Stowed) -->
+    <!-- Tail Fin -->
+    <path d="M -22 -3 L -32 -26 L -16 -26 L -7 -3 Z" fill="#e45c34"/>
+    <!-- Elevator -->
+    <rect x="-24" y="-5" width="14" height="3" fill="#d8d0c1"/>
+    <!-- Fuselage -->
+    <path d="M 40 1 Q 30 -10 10 -10 L -25 -7 L -26 4 L 12 7 Q 32 6 40 1 Z" fill="#f4efe6"/>
+    <!-- Vermilion Livery Stripe -->
+    <path d="M 40 1 L 22 -3 L 22 3 Z" fill="#e45c34"/>
+    <rect x="-25" y="-1.5" width="47" height="3" fill="#e45c34"/>
+    <!-- Canopy -->
+    <path d="M 22 -3 Q 14 -10 4 -9 L 4 -3 Z" fill="#22313b"/>
+    <!-- High Wing -->
+    <rect x="-10" y="-11" width="24" height="4" fill="#dfd8c8"/>
+    <!-- Engine Nozzle -->
+    <rect x="-28" y="-5" width="5" height="9" fill="#2e3438"/>
+  </g>
+
+  <!-- Title Badge Overlay -->
+  <g transform="translate(48, 48)" filter="url(#hudShadow)">
+    <rect width="400" height="88" rx="6" fill="#121518" fill-opacity="0.88" stroke="#2f373f" stroke-width="1.5"/>
+    <text x="24" y="38" class="sans title" font-size="28">KESTREL C-44</text>
+    <text x="24" y="66" class="sans sub">2D COCKPIT FLIGHT SIMULATOR</text>
+  </g>
+
+  <!-- Flight Status Telemetry Overlay -->
+  <g transform="translate(860, 48)" filter="url(#hudShadow)">
+    <rect width="292" height="88" rx="6" fill="#121518" fill-opacity="0.88" stroke="#2f373f" stroke-width="1.5"/>
+    <text x="20" y="32" class="sans tag">ROUTE</text>
+    <text x="20" y="58" class="mono val" font-size="16">KALA → MESA-4 → SOLIS</text>
+    <text x="20" y="74" class="sans tag">LEG 1 IN TRANSIT · MIDWAY REFUEL</text>
+  </g>
+
+  <!-- Cockpit Glareshield & Console Bezel -->
+  <rect y="338" width="1200" height="82" fill="url(#panelGrad)" stroke="#2f373f" stroke-width="1.5"/>
+  <rect y="338" width="1200" height="4" fill="#efa931"/>
+
+  <!-- Console Mini Bays Preview -->
+  <g transform="translate(40, 354)">
+    <!-- Bay 1: Engine -->
+    <rect width="200" height="54" rx="4" fill="#15191d" stroke="#2a3138" stroke-width="1"/>
+    <circle cx="28" cy="27" r="7" fill="#48bd75"/>
+    <text x="44" y="24" class="sans tag">ENGINE MASTER</text>
+    <text x="44" y="42" class="mono val" font-size="14">IGN ON · 94% N1</text>
+  </g>
+
+  <g transform="translate(260, 354)">
+    <!-- Bay 2: Fuel -->
+    <rect width="200" height="54" rx="4" fill="#15191d" stroke="#2a3138" stroke-width="1"/>
+    <text x="16" y="24" class="sans tag">FUEL TANK</text>
+    <text x="16" y="42" class="mono val" font-size="14">84% · 1.6 u/s</text>
+    <rect x="110" y="22" width="76" height="18" rx="2" fill="#efa931"/>
+    <text x="148" y="35" class="sans" font-size="10" font-weight="800" fill="#121518" text-anchor="middle">REFUEL DEPOT</text>
+  </g>
+
+  <g transform="translate(480, 354)">
+    <!-- Bay 3: Thrust & Pitch -->
+    <rect width="220" height="54" rx="4" fill="#15191d" stroke="#2a3138" stroke-width="1"/>
+    <text x="16" y="24" class="sans tag">THRUST LEVER</text>
+    <text x="16" y="42" class="mono val" font-size="14">78% CRUISE</text>
+    <text x="120" y="24" class="sans tag">PITCH COMMAND</text>
+    <text x="120" y="42" class="mono val" font-size="14">+12° CLIMB</text>
+  </g>
+
+  <g transform="translate(720, 354)">
+    <!-- Bay 4: Config -->
+    <rect width="210" height="54" rx="4" fill="#15191d" stroke="#2a3138" stroke-width="1"/>
+    <text x="16" y="24" class="sans tag">FLAPS / GEAR</text>
+    <text x="16" y="42" class="mono val" font-size="14">T/O (15°) · UP</text>
+    <rect x="135" y="16" width="60" height="24" rx="3" fill="#242c33" stroke="#48bd75" stroke-width="1"/>
+    <text x="165" y="32" class="sans" font-size="10" font-weight="700" fill="#48bd75" text-anchor="middle">ALT HOLD</text>
+  </g>
+
+  <g transform="translate(950, 354)">
+    <!-- Bay 5: Telemetry -->
+    <rect width="210" height="54" rx="4" fill="#15191d" stroke="#2a3138" stroke-width="1"/>
+    <text x="16" y="24" class="sans tag">AIRSPEED / ALT</text>
+    <text x="16" y="42" class="mono val" font-size="14">48 m/s · 186 m</text>
+    <text x="140" y="24" class="sans tag">VSI</text>
+    <text x="140" y="42" class="mono val" font-size="14" fill="#48bd75">+3.2</text>
+  </g>
+</svg>

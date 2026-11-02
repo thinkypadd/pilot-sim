@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 240" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgBox" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#181d22"/>
+      <stop offset="100%" stop-color="#0f1215"/>
+    </linearGradient>
+    <linearGradient id="terrainGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#5a4336"/>
+      <stop offset="100%" stop-color="#241b16"/>
+    </linearGradient>
+    <linearGradient id="seaGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#2a6f8e"/>
+      <stop offset="100%" stop-color="#143142"/>
+    </linearGradient>
+  </defs>
+
+  <style>
+    .mono { font-family: 'SF Mono', 'Consolas', 'Liberation Mono', monospace; font-variant-numeric: tabular-nums; }
+    .sans { font-family: 'Bahnschrift', 'DIN Alternate', -apple-system, sans-serif; }
+    .label { font-size: 11px; fill: #c5beb2; font-weight: 600; letter-spacing: 0.05em; }
+    .name { font-size: 14px; fill: #f4efe6; font-weight: 700; letter-spacing: 0.03em; }
+    .code { font-size: 12px; fill: #efa931; font-weight: 700; }
+  </style>
+
+  <!-- Background Card -->
+  <rect width="1100" height="240" rx="8" fill="url(#bgBox)" stroke="#2f373f" stroke-width="1.5"/>
+
+  <!-- Distance Grid Lines -->
+  <line x1="80" y1="30" x2="80" y2="190" stroke="#222930" stroke-width="1" stroke-dasharray="4 4"/>
+  <line x1="560" y1="30" x2="560" y2="190" stroke="#222930" stroke-width="1" stroke-dasharray="4 4"/>
+  <line x1="1020" y1="30" x2="1020" y2="190" stroke="#222930" stroke-width="1" stroke-dasharray="4 4"/>
+
+  <!-- Terrain Elevation Profile -->
+  <!-- 0 km (elev 42m) -> 4.3 km Mesa (elev 224m) -> Cloudspine Ridge (elev 332m) -> Solis (elev 18m) -> Sea (0m) -->
+  <path d="M 40 185 L 80 178 L 160 178 L 260 162 L 360 148 L 480 138 L 510 118 L 610 118 L 660 145 L 750 82 L 840 130 L 920 172 L 960 186 L 1040 186 L 1055 198 L 1080 198 L 1080 230 L 40 230 Z" fill="url(#terrainGrad)"/>
+  <path d="M 40 185 L 80 178 L 160 178 L 260 162 L 360 148 L 480 138 L 510 118 L 610 118 L 660 145 L 750 82 L 840 130 L 920 172 L 960 186 L 1040 186 L 1055 198 L 1080 198" fill="none" stroke="#7a5743" stroke-width="2.5"/>
+
+  <!-- Sea Segment -->
+  <rect x="1055" y="198" width="45" height="32" fill="url(#seaGrad)"/>
+
+  <!-- Thermal Columns -->
+  <g opacity="0.4">
+    <path d="M 280 155 Q 285 100 280 60" fill="none" stroke="#efa931" stroke-width="2" stroke-dasharray="4 4"/>
+    <path d="M 700 135 Q 705 80 700 40" fill="none" stroke="#efa931" stroke-width="2" stroke-dasharray="4 4"/>
+    <text x="280" y="50" class="sans label" fill="#efa931" text-anchor="middle">THERMAL</text>
+    <text x="700" y="30" class="sans label" fill="#efa931" text-anchor="middle">THERMAL</text>
+  </g>
+
+  <!-- Flight Path Arc: Leg 1 & Leg 2 -->
+  <path d="M 120 178 C 220 80, 420 70, 550 118" fill="none" stroke="#efa931" stroke-width="2.5" stroke-dasharray="6 6"/>
+  <path d="M 570 118 C 650 50, 780 40, 990 186" fill="none" stroke="#48bd75" stroke-width="2.5" stroke-dasharray="6 6"/>
+
+  <!-- Airport A: Kala Valley Field -->
+  <rect x="75" y="176" width="90" height="4" fill="#f4efe6"/>
+  <circle cx="80" cy="178" r="5" fill="#f4efe6"/>
+  <text x="80" y="148" class="sans code">KALA</text>
+  <text x="80" y="132" class="sans name">Kala Valley Field</text>
+  <text x="80" y="162" class="mono label">0.0 km · Elev 42m · Takeoff</text>
+
+  <!-- Midway Refuel Station: Redrock Depot -->
+  <rect x="510" y="116" width="100" height="4" fill="#efa931"/>
+  <circle cx="560" cy="118" r="6" fill="#efa931"/>
+  <text x="560" y="88" class="sans code">MESA-4</text>
+  <text x="560" y="72" class="sans name">Redrock Fuel Depot</text>
+  <text x="560" y="102" class="mono label">4.3 km · Elev 224m · Mandatory Refuel</text>
+
+  <!-- Mountain Peak: Cloudspine Ridge -->
+  <circle cx="750" cy="82" r="3" fill="#e45c34"/>
+  <text x="750" y="68" class="sans label" fill="#e45c34" text-anchor="middle">Cloudspine Ridge (332m)</text>
+
+  <!-- Airport B: Solis Coastal Intl -->
+  <rect x="960" y="184" width="80" height="4" fill="#48bd75"/>
+  <circle cx="1000" cy="186" r="6" fill="#48bd75"/>
+  <text x="960" y="152" class="sans code" fill="#48bd75">SOLIS</text>
+  <text x="960" y="136" class="sans name">Solis Coastal Intl</text>
+  <text x="960" y="166" class="mono label">8.2 km · Elev 18m · Destination</text>
+</svg>
